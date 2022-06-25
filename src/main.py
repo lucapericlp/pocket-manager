@@ -10,8 +10,5 @@ def run_sr_manager():
     if elapsed_items:
         send_notifications(elapsed_items)
 
-
-    breakpoint()
-
 if __name__ == "__main__":
     run_sr_manager()

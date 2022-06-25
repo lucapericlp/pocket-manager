@@ -1,7 +1,7 @@
 import datetime
-from typing import Dict, Sequence
+from typing import Dict, List, Sequence
 import requests
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json
 
 from src.config import API_HOST, POCKET_CONSUMER_KEY, POCKET_ACCESS_TOKEN
@@ -14,13 +14,14 @@ class PocketItem:
     item_id: int
     resolved_url: str
     time_added: datetime.datetime
-    tags: Dict[str, Dict[str, str]]
+    tags: List[str] = field(default_factory=list)
 
     @classmethod
     def type_conversions(cls, item):
         overrides = {
             "item_id": int(item["item_id"]),
-            "time_added": datetime.datetime.utcfromtimestamp(int(item["time_added"]))
+            "time_added": datetime.datetime.utcfromtimestamp(int(item["time_added"])),
+            "tags": list(item.get("tags", {}).keys())
         }
         return {**item, **overrides}
 

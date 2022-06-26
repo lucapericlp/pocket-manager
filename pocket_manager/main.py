@@ -21,5 +21,9 @@ def run_sr_manager():
             raise Exception("Failed to send notifications!")
         advance_sr_tags(elapsed_items)
 
+def lambda_handler(event, context):
+    run_sr_manager()
+    return {"status": "Success"}
+
 if __name__ == "__main__":
     run_sr_manager()

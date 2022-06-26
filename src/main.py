@@ -1,18 +1,25 @@
 from typing import Sequence
 from src.filter_items import filter_for_elapsed
 from src.get_items import PocketItem, get_favourite_items
-from src.notifications import send_notifications
-from src.tags import update_empty_tags
+from src.notifications import send_notification
+from src.tags import get_latest_tag, update_empty_tags, update_with_tags
 
 def advance_sr_tags(items: Sequence[PocketItem]) -> Sequence[PocketItem]:
-    ...
+    advanced_items = []
+    for item in items:
+        new_tag = f"sr-{get_latest_tag(item)*2}"
+        new_item = update_with_tags(item, [*item.tags, new_tag])
+        advanced_items.append(new_item)
+    return advanced_items
+
 
 def run_sr_manager():
     tagged_items = update_empty_tags(get_favourite_items())
     elapsed_items = filter_for_elapsed(tagged_items)
     if elapsed_items:
-        notified_items = send_notifications(elapsed_items)
-        advance_sr_tags(notified_items)
+        if not send_notification(elapsed_items):
+            raise Exception("Failed to send notifications!")
+        advance_sr_tags(elapsed_items)
 
 if __name__ == "__main__":
     run_sr_manager()

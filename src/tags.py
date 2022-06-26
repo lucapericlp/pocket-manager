@@ -1,26 +1,36 @@
 from dataclasses import asdict
 from typing import Sequence
 import requests
-from src.config import API_HOST, POCKET_ACCESS_TOKEN, POCKET_CONSUMER_KEY
+from src.config import POCKET_ACCESS_TOKEN, POCKET_CONSUMER_KEY, POCKET_MODIFY_ENDPOINT
 from src.get_items import PocketItem
 
-POCKET_MODIFY_ENDPOINT = f"{API_HOST}/send"
 INITIAL_SR_TAG = "sr-1"
 
-def update_empty_tags(items: Sequence[PocketItem]) -> Sequence[PocketItem]:
+def get_latest_tag(item: PocketItem) -> int:
+    return int(max(item.tags).split("-")[1])
+
+
+def update_with_tags(item: PocketItem, desired_tags: Sequence[str]) -> PocketItem:
+    """ this should be a nice instance method for the PocketItem model """
+    tags = ",".join(desired_tags)
     keys = {"consumer_key": POCKET_CONSUMER_KEY, "access_token": POCKET_ACCESS_TOKEN}
-    query = {"action": "tags_add", "tags": INITIAL_SR_TAG}
+    query = {"action": "tags_add", "tags": tags}
+
+    actions = [{**query, "item_id": item.item_id}]
+    resp = requests.post(
+        POCKET_MODIFY_ENDPOINT, json={**keys, "actions": actions}
+    )
+    response = resp.json()
+    if not int(response["status"]):
+        print(f"Pocket encountered an error updating tags for {item.item_id}. Ignoring...")
+    return PocketItem.from_dict({**asdict(item), "tags": desired_tags})
+
+
+def update_empty_tags(items: Sequence[PocketItem]) -> Sequence[PocketItem]:
     tagged_items = []
 
     for item in items:
         if not item.tags:
-            actions = [{**query, "item_id": item.item_id}]
-            resp = requests.post(
-                POCKET_MODIFY_ENDPOINT, json={**keys, "actions": actions}
-            )
-            response = resp.json()
-            if not int(response["status"]):
-                print("Pocket encountered an error. Ignoring...")
-            item = PocketItem.from_dict({**asdict(item), "tags": [INITIAL_SR_TAG]})
+            item = update_with_tags(item, [INITIAL_SR_TAG])
         tagged_items.append(item)
     return tagged_items

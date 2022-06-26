@@ -4,7 +4,7 @@ import requests
 from dataclasses import dataclass, field
 from dataclasses_json import dataclass_json
 
-from src.config import API_HOST, POCKET_CONSUMER_KEY, POCKET_ACCESS_TOKEN
+from pocket_manager.config import API_HOST, POCKET_CONSUMER_KEY, POCKET_ACCESS_TOKEN
 
 POCKET_GET_ENDPOINT = f"{API_HOST}/get"
 

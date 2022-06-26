@@ -1,7 +1,7 @@
 from typing import Sequence
 import datetime
-from src.get_items import PocketItem
-from src.tags import get_latest_tag
+from pocket_manager.get_items import PocketItem
+from pocket_manager.tags import get_latest_tag
 
 
 def filter_for_elapsed(items: Sequence[PocketItem]) -> Sequence[PocketItem]:

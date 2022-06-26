@@ -1,9 +1,9 @@
 from typing import Mapping, Sequence
 from collections import defaultdict
 import requests
-from src.config import SLACK_WEBHOOK_URL
-from src.get_items import PocketItem
-from src.tags import get_latest_tag
+from pocket_manager.config import SLACK_WEBHOOK_URL
+from pocket_manager.get_items import PocketItem
+from pocket_manager.tags import get_latest_tag
 
 
 def send_notification(

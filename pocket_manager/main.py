@@ -1,8 +1,8 @@
 from typing import Sequence
-from src.filter_items import filter_for_elapsed
-from src.get_items import PocketItem, get_favourite_items
-from src.notifications import send_notification
-from src.tags import get_latest_tag, update_empty_tags, update_with_tags
+from pocket_manager.filter_items import filter_for_elapsed
+from pocket_manager.get_items import PocketItem, get_favourite_items
+from pocket_manager.notifications import send_notification
+from pocket_manager.tags import get_latest_tag, update_empty_tags, update_with_tags
 
 def advance_sr_tags(items: Sequence[PocketItem]) -> Sequence[PocketItem]:
     advanced_items = []

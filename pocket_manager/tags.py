@@ -1,8 +1,8 @@
 from dataclasses import asdict
 from typing import Sequence
 import requests
-from src.config import POCKET_ACCESS_TOKEN, POCKET_CONSUMER_KEY, POCKET_MODIFY_ENDPOINT
-from src.get_items import PocketItem
+from pocket_manager.config import POCKET_ACCESS_TOKEN, POCKET_CONSUMER_KEY, POCKET_MODIFY_ENDPOINT
+from pocket_manager.get_items import PocketItem
 
 INITIAL_SR_TAG = "sr-1"
 

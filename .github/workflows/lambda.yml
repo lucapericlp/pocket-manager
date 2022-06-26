@@ -1,0 +1,39 @@
+name: deploy to lambda
+on: [push]
+jobs:
+
+  deploy_zip:
+    name: deploy lambda function
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout source code
+        uses: actions/checkout@v1
+      - name: Install poetry
+        run: pipx install poetry
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          architecture: 'x64'
+          cache: 'poetry'
+      - name: set pythonpath
+        run: |
+          echo "PYTHONPATH=${PWD}" >> $GITHUB_ENV
+
+      - name: Build deployment artifact
+        run: |
+          poetry build && poetry run pip install --upgrade -t package dist/*.whl && cd package ; zip -r ../artifact.zip . -x '*.pyc' && cd ../
+      - name: default deploy
+        uses: appleboy/lambda-action@master
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: ${{ secrets.AWS_REGION }}
+          function_name: lambda-pocket-notifier
+          zip_file: artifact.zip
+          memory_size: 128
+          timeout: 10
+          handler: pocket_manager.main.lambda_handler
+          role: arn:aws:iam::211215339313:role/service-role/lambda-apigateway-role
+          runtime: python3.9

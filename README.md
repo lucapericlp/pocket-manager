@@ -6,10 +6,8 @@ then we can use Pocket.
 
 # Implementation
 
-We have a scheduled Lambda that invokes the Pocket API in order to send a
-notification to me for what needs to be reviewed. The notification medium can be
-either email or mobile push notification. A consideration for mobile push
-notification -> use a Slack bot to ping me directly.
+We have a scheduled Lambda that invokes the Pocket API to find what content
+needs to be reviewed in an SR fashion & notifies via Slack app.
 
 ## Logic
 

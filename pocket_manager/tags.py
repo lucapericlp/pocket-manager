@@ -7,7 +7,7 @@ from pocket_manager.get_items import PocketItem
 INITIAL_SR_TAG = "sr-1"
 
 def get_latest_tag(item: PocketItem) -> int:
-    return int(max(item.tags).split("-")[1])
+    return max([int(tag.split("-")[1]) for tag in item.tags])
 
 
 def update_with_tags(item: PocketItem, desired_tags: Sequence[str]) -> PocketItem:
